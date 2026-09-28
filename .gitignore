@@ -1,0 +1,13 @@
+# Dependencies (npm install recreates these)
+node_modules/
+
+# Compiled output (npm run build recreates this)
+build/
+
+# Secrets and local config
+.env
+
+# Personal data - must NEVER be committed
+*.db
+*.db-journal
+data/

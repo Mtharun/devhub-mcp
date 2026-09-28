@@ -1,0 +1,14 @@
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/package.json b/package.json[m
+[1mindex e2a88b2..6f5fb60 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -10,7 +10,7 @@[m
+   "keywords": [],[m
+   "author": "",[m
+   "license": "ISC",[m
+[31m-  "type": "commonjs",[m
+[32m+[m[32m  "type": "module",[m
+   "dependencies": {[m
+     "@modelcontextprotocol/sdk": "^1.30.1",[m
+     "zod": "^4.6.5"[m

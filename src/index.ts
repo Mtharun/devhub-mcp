@@ -1,20 +1,24 @@
 import fs from "node:fs";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { config } from "./config.js";
 import { openDatabase } from "./db/database.js";
-import { createProject, listProjects } from "./services/projectService.js";
+import { registerProjectTools } from "./mcp/projectTools.js";
 
-fs.mkdirSync(config.dataDir, { recursive: true });
-const db = openDatabase(config.dbPath);
+async function main() {
+  fs.mkdirSync(config.dataDir, { recursive: true });
+  const db = openDatabase(config.dbPath);
 
-const created = createProject(db, {
-  name: "devhub-mcp",
-  description: "Personal developer assistant MCP server for projects and tasks",
-  status: "in_progress",
-  techStack: ["TypeScript", "Node.js", "MCP", "SQLite"],
-  path: "D:\\devhub-mcp",
+  const server = new McpServer({ name: "devhub-mcp", version: "0.1.0" });
+  registerProjectTools(server, db);
+
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+
+  console.error(`DevHub MCP server running. Database: ${config.dbPath}`);
+}
+
+main().catch((error) => {
+  console.error("Fatal error:", error);
+  process.exit(1);
 });
-
-console.error("Created:", created);
-console.error("All projects:", listProjects(db));
-
-db.close();

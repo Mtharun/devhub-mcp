@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { DatabaseSync } from "node:sqlite";
 import { z } from "zod";
-import { createProject, listProjects } from "../services/projectService.js";
+import { createProject, listProjects, updateProject } from "../services/projectService.js";
 import { DevHubError } from "../errors.js";
 
 export function registerProjectTools(server: McpServer, db: DatabaseSync): void {
@@ -80,6 +80,58 @@ export function registerProjectTools(server: McpServer, db: DatabaseSync): void 
       }
     }
   );
+
+  // Tool 3: update_project (write, overwrites existing values)
+  server.registerTool(
+    "update_project",
+    {
+      title: "Update Project",
+      description:
+        "Update an existing project's description, status, tech stack, local folder path or GitHub URL. " +
+        "Use this when the user says they started, paused, resumed or finished a project, " +
+        "shares a project's GitHub link or folder path, or mentions a new technology they are using. " +
+        "Only the fields you provide are changed. " +
+        "Note: techStack replaces the whole list, so include existing technologies you want to keep. " +
+        "To archive a project, use archive_project instead.",
+      inputSchema: {
+        name: z.string().trim().min(1).max(100).describe("Exact name of the existing project to update"),
+        description: z.string().trim().max(500).optional().describe("New description"),
+        status: z
+          .enum(["planned", "in_progress", "on_hold", "completed"])
+          .optional()
+          .describe("New status"),
+        techStack: z
+          .array(z.string().trim().min(1).max(50))
+          .max(20)
+          .optional()
+          .describe("Full new list of technologies (replaces the existing list)"),
+        path: z.string().trim().optional().describe("New absolute local folder path"),
+        githubUrl: z.url().optional().describe("New GitHub repository URL"),
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async ({ name, ...changes }) => {
+      try {
+        const project = updateProject(db, name, changes);
+        return {
+          content: [
+            { type: "text", text: `Updated project "${project.name}".\n${JSON.stringify(project, null, 2)}` },
+          ],
+        };
+      } catch (error) {
+        if (error instanceof DevHubError) {
+          return errorResult(error.message);
+        }
+        console.error("Unexpected error in update_project:", error);
+        return errorResult("An unexpected error occurred while updating the project.");
+      }
+    }
+  );
 }
 
 // Helper: build an MCP tool error result
@@ -89,3 +141,4 @@ function errorResult(message: string) {
     isError: true,
   };
 }
+

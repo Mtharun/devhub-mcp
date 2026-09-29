@@ -107,3 +107,56 @@ export function listProjects(db: DatabaseSync, includeArchived = false): Project
   const rows = db.prepare(sql).all() as unknown as ProjectRow[];
   return rows.map(toProject);
 }
+
+export interface UpdateProjectInput {
+  description?: string;
+  status?: ProjectStatus;
+  techStack?: string[];
+  path?: string;
+  githubUrl?: string;
+}
+
+export function updateProject(db: DatabaseSync, name: string, changes: UpdateProjectInput): Project {
+  const setClauses: string[] = [];
+  const values: string[] = [];
+
+  if (changes.description !== undefined) {
+    setClauses.push("description = ?");
+    values.push(changes.description);
+  }
+  if (changes.status !== undefined) {
+    setClauses.push("status = ?");
+    values.push(changes.status);
+  }
+  if (changes.techStack !== undefined) {
+    setClauses.push("tech_stack = ?");
+    values.push(JSON.stringify(changes.techStack));
+  }
+  if (changes.path !== undefined) {
+    setClauses.push("path = ?");
+    values.push(changes.path);
+  }
+  if (changes.githubUrl !== undefined) {
+    setClauses.push("github_url = ?");
+    values.push(changes.githubUrl);
+  }
+
+  if (setClauses.length === 0) {
+    throw new DevHubError("No changes provided. Specify at least one field to update.");
+  }
+
+  setClauses.push("updated_at = ?");
+  values.push(new Date().toISOString());
+
+  const row = db
+    .prepare(`UPDATE projects SET ${setClauses.join(", ")} WHERE name = ? RETURNING *`)
+    .get(...values, name) as unknown as ProjectRow | undefined;
+
+  if (!row) {
+    throw new DevHubError(
+      `No project named "${name}" was found. Use list_projects to see the available projects.`
+    );
+  }
+
+  return toProject(row);
+}

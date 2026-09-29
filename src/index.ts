@@ -8,6 +8,7 @@ import { registerTaskTools } from "./mcp/taskTools.js";
 import { registerReadmeFeatures } from "./mcp/readmeFeatures.js";
 import { registerPrompts } from "./mcp/prompts.js";
 import { registerApplicationTools } from "./mcp/applicationTools.js";
+import { registerTodoTools } from "./mcp/todoTools.js";
 
 async function main() {
   fs.mkdirSync(config.dataDir, { recursive: true });
@@ -16,7 +17,9 @@ async function main() {
   const server = new McpServer({ name: "devhub-mcp", version: "0.1.0" });
   registerProjectTools(server, db);
   registerTaskTools(server, db);
-  registerReadmeFeatures(server, db);
+  const folderAccess = { allowedRoots: config.allowedRoots };
+  registerReadmeFeatures(server, db, folderAccess);
+  registerTodoTools(server, db, folderAccess);
   registerApplicationTools(server, db);
   registerPrompts(server, db);
 

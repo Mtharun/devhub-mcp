@@ -3,26 +3,21 @@ import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { DevHubError } from "../errors.js";
 import { getProjectByName } from "./projectService.js";
+import { resolveProjectFolder, type FolderAccessOptions } from "./projectFolder.js";
 
 const README_FILE_NAME = "README.md";
 const MAX_README_BYTES = 200 * 1024; // 200 KB
 
-export function readProjectReadme(db: DatabaseSync, projectName: string): string {
+export function readProjectReadme(
+  db: DatabaseSync,
+  projectName: string,
+  options: FolderAccessOptions = {}
+): string {
   const project = getProjectByName(db, projectName);
+  const folder = resolveProjectFolder(project, options);
 
-  if (!project.path) {
-    throw new DevHubError(
-      `Project "${project.name}" has no local folder path. Set it first with update_project.`
-    );
-  }
-
-  if (!path.isAbsolute(project.path)) {
-    throw new DevHubError(
-      `Project "${project.name}" has a relative path ("${project.path}"). Update it to an absolute path.`
-    );
-  }
-
-  const readmePath = path.join(project.path, README_FILE_NAME);
+  // The file name is fixed, never taken from input, so "../" tricks are impossible
+  const readmePath = path.join(folder, README_FILE_NAME);
 
   let stats: fs.Stats;
   try {

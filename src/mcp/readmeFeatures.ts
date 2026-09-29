@@ -3,10 +3,15 @@ import type { DatabaseSync } from "node:sqlite";
 import { z } from "zod";
 import { listProjects } from "../services/projectService.js";
 import { readProjectReadme } from "../services/readmeService.js";
+import type { FolderAccessOptions } from "../services/projectFolder.js";
 import { DevHubError } from "../errors.js";
 import { errorResult } from "./results.js";
 
-export function registerReadmeFeatures(server: McpServer, db: DatabaseSync): void {
+export function registerReadmeFeatures(
+  server: McpServer,
+  db: DatabaseSync,
+  options: FolderAccessOptions
+): void {
   // Resource template: project://{name}/readme (user attaches it as context)
   server.registerResource(
     "project-readme",
@@ -28,7 +33,7 @@ export function registerReadmeFeatures(server: McpServer, db: DatabaseSync): voi
     },
     async (uri, { name }) => {
       const projectName = decodeURIComponent(String(name));
-      const content = readProjectReadme(db, projectName);
+      const content = readProjectReadme(db, projectName, options);
       return {
         contents: [{ uri: uri.href, mimeType: "text/markdown", text: content }],
       };
@@ -51,7 +56,7 @@ export function registerReadmeFeatures(server: McpServer, db: DatabaseSync): voi
     },
     async ({ projectName }) => {
       try {
-        const content = readProjectReadme(db, projectName);
+        const content = readProjectReadme(db, projectName, options);
         return {
           content: [{ type: "text", text: `README.md of "${projectName}":\n\n${content}` }],
         };

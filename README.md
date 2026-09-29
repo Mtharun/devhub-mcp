@@ -1,6 +1,6 @@
 # DevHub MCP
 
-A personal developer and career assistant built as a **Model Context Protocol (MCP) server**. It lets AI assistants like Claude manage my projects, tasks, job applications and code TODOs through natural language, backed by a local SQLite database. A small local dashboard shows the same data in the browser.
+A personal developer and career assistant built as a **Model Context Protocol (MCP) server**. It lets AI assistants like Claude manage my projects, tasks, job applications and code TODOs through natural language, backed by a local SQLite database. A React dashboard shows the same data in the browser.
 
 > "What should I work on today?" · "I applied to Zoho for a Full Stack role." · "Find TODOs in devhub-mcp."
 
@@ -10,7 +10,7 @@ A personal developer and career assistant built as a **Model Context Protocol (M
 
 As a 2026 full stack developer fresher, I wanted to learn MCP by building something I would actually use every day, not a toy example. I keep losing track of my projects, tasks and learning progress across different folders and notes, so I am building one local assistant that my AI can talk to. This project is the first step towards my own personal AI assistant that will eventually help with GitHub, job applications and interview preparation.
 
-## Features (v0.3)
+## Features (v0.4)
 
 **Projects and tasks**
 - List, create, update and archive projects (no hard deletes; archived items can be restored)
@@ -27,10 +27,12 @@ As a 2026 full stack developer fresher, I wanted to learn MCP by building someth
 - `find_todos`: scan a project folder for `TODO`, `FIXME`, `HACK`, `XXX` and `BUG` comments
 
 **Dashboard**
-- Read-only local web dashboard and JSON API (`npm run web`)
+- React + Vite + Tailwind dashboard: today's focus, task Kanban board, job pipeline, project progress rings
+- Light/dark theme, mobile friendly, refreshes itself every 30 seconds
+- Served by a read-only local JSON API (`npm run web`)
 
 **Quality**
-- 53 automated tests with `node:test` and in-memory SQLite
+- 55 automated tests with `node:test` and in-memory SQLite
 - Versioned database migrations (existing databases upgrade automatically)
 - Friendly, actionable errors that the AI can act on
 
@@ -64,7 +66,7 @@ As a 2026 full stack developer fresher, I wanted to learn MCP by building someth
 Claude Desktop (MCP host)                     Browser
         │  JSON-RPC over stdio                   │  HTTP (localhost only)
         ▼                                        ▼
-src/index.ts  (MCP bootstrap)            src/web/main.ts  (dashboard bootstrap)
+src/index.ts  (MCP bootstrap)            dashboard/  (React app) → src/web/main.ts
 src/mcp/*Tools.ts, prompts.ts            src/web/server.ts  (read-only JSON API)
         │   MCP layer: zod validation,           │
         │   result formatting                    │
@@ -88,7 +90,7 @@ src/
 ├── mcp/                  MCP tools, resource template and prompt
 ├── web/                  dashboard HTTP server
 └── utils/                small helpers
-public/                   dashboard HTML, CSS and JavaScript
+dashboard/                React + Vite + Tailwind frontend (its own package.json)
 ```
 
 ## Tech stack
@@ -100,7 +102,7 @@ public/                   dashboard HTML, CSS and JavaScript
 | MCP TypeScript SDK (v1) | Official protocol implementation |
 | zod | Input validation for every tool and API query |
 | SQLite | Single-file local database, no server needed |
-| Plain HTML/CSS/JS | Dashboard without a build step or framework |
+| React 19 + Vite + Tailwind CSS 4 | Dashboard UI with components and fast development |
 
 ## Setup
 
@@ -146,11 +148,22 @@ Fully quit and restart Claude Desktop after any config or code change.
 
 ### Open the dashboard
 
+First time only:
+
+```bash
+npm run dashboard:install
+npm run build:dashboard
+```
+
+Then:
+
 ```bash
 npm run web
 ```
 
-Then open http://localhost:4321. The dashboard is read-only; make changes by talking to Claude.
+Open http://localhost:4321. The dashboard is read-only; make changes by talking to Claude.
+
+To work on the dashboard itself, run `npm run web` in one terminal and `npm run dashboard:dev` in another, then open http://localhost:5173 (changes appear instantly; `/api` calls are proxied to port 4321).
 
 ## Security and safety design
 
@@ -159,7 +172,7 @@ Then open http://localhost:4321. The dashboard is read-only; make changes by tal
 - **SQL injection safe:** all values use parameterized queries (`?` placeholders); column names only come from fixed code
 - **Input limits:** zod enforces lengths, enums, dates and URL formats
 - **Safe file access:** fixed file names (no `../` tricks), size limits, symlinks not followed, `.env` files never scanned, optional folder allow-list (`DEVHUB_ALLOWED_ROOTS`)
-- **Dashboard:** binds to `127.0.0.1` only, checks the `Host` header (DNS rebinding protection), GET only, fixed static file list, Content Security Policy, text rendered with `textContent` (XSS safe)
+- **Dashboard:** binds to `127.0.0.1` only, checks the `Host` header (DNS rebinding protection), GET only, only plain file names from the built dashboard folder, Content Security Policy, text rendered with `textContent` (XSS safe)
 - **Tool annotations:** read-only and destructive hints for host approval flows
 - **Database constraints:** `UNIQUE`, `CHECK` and foreign keys as a last line of defense
 - **Migrations:** each schema change runs in a transaction; the app refuses databases from a newer version
@@ -174,6 +187,7 @@ Then open http://localhost:4321. The dashboard is read-only; make changes by tal
 - [x] TODO scanner for local project folders
 - [x] Job application tracker
 - [x] REST API and dashboard (read-only)
+- [x] React dashboard (Kanban board, job pipeline, progress rings)
 - [ ] Learning progress and developer notes
 - [ ] Interview preparation prompts
 - [ ] Connect the official GitHub MCP server alongside DevHub

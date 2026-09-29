@@ -18,6 +18,10 @@ As a 2026 full stack developer fresher, I wanted to learn MCP by building someth
 - **Tasks**: create, list, update and archive tasks with priorities and due dates
 - **Smart ordering**: pending tasks sorted by priority, then due date
 - **Project README access**: as an MCP resource template (`project://{name}/readme`) and a read tool
+- **plan_my_day prompt**: suggests up to 3 tasks for today using live task data
+- **Automated tests**: 16 service-layer tests with `node:test` and an in-memory SQLite database
+
+
 
 ## Example
 
@@ -67,6 +71,7 @@ npm install
 cp .env.example .env    # then set DEVHUB_DATA_DIR to an absolute path
 npm run build
 ```
+npm test               # runs the automated test suite
 
 Add the server to your Claude Desktop config (`claude_desktop_config.json`, open it via Settings → Developer → Edit Config):
 

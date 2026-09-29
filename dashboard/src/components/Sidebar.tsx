@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { timeAgo } from "../lib/dates";
-import { IconBriefcase, IconChecklist, IconFolder, IconHome, IconRefresh } from "./icons";
+import { IconBriefcase, IconChecklist, IconFolder, IconHome, IconKeyboard, IconRefresh } from "./icons";
 
 export const SECTIONS = ["overview", "tasks", "jobs", "projects"] as const;
 export type Section = (typeof SECTIONS)[number];
@@ -93,8 +93,8 @@ export function Sidebar({ active, counts, onSelect, loading, lastUpdated, versio
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 font-mono text-[11px] text-night-dim">
               <span className="relative flex h-2 w-2">
-                {lastUpdated && <span className="absolute inset-0 animate-ping rounded-full bg-green-400/60" />}
-                <span className={`relative h-2 w-2 rounded-full ${lastUpdated ? "bg-green-400" : "bg-night-dim"}`} />
+                {lastUpdated && <span className="absolute inset-0 animate-ping rounded-full bg-accent/60" />}
+                <span className={`relative h-2 w-2 rounded-full ${lastUpdated ? "bg-accent" : "bg-night-dim"}`} />
               </span>
               {lastUpdated ? `live · ${timeAgo(lastUpdated)}` : "connecting…"}
             </span>
@@ -104,6 +104,11 @@ export function Sidebar({ active, counts, onSelect, loading, lastUpdated, versio
             {version ? `v${version} · ` : ""}local data · read-only
             <br />
             Changes happen through Claude.
+          </p>
+          <p className="mt-3 flex items-center gap-1.5 border-t border-night-line pt-3 font-mono text-[10.5px] text-night-dim">
+            <IconKeyboard width={14} height={14} />
+            <kbd className="rounded bg-night px-1 text-white">1</kbd>–<kbd className="rounded bg-night px-1 text-white">4</kbd> sections
+            <kbd className="ml-1 rounded bg-night px-1 text-white">/</kbd> search
           </p>
         </div>
       </aside>

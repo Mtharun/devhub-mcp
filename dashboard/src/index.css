@@ -3,28 +3,28 @@
 @import "tailwindcss";
 
 /*
-  Layout: light working area with two dark anchors — the sidebar and the overview hero.
-  Warm paper neutrals, near-black "night" surfaces, one signal-orange accent.
+  Layout: light working area with two dark anchors, the sidebar and the overview hero.
+  Cool paper neutrals, midnight-navy surfaces, one teal accent.
 */
 :root {
-  --canvas: #f3f1ec;
+  --canvas: #f3f5f9;       /* cool paper */
   --panel: #ffffff;
-  --sunken: #ebe7df;
-  --line: #e3ded4;
-  --ink: #17181c;
-  --dim: #6c6961;
-  --accent: #e8590c;       /* on dark surfaces and for fills */
-  --accent-text: #c2410c;  /* orange text on light surfaces (readable contrast) */
-  --accent-soft: #fdecdf;
+  --sunken: #e8ecf3;
+  --line: #dde3ec;
+  --ink: #111a2e;          /* navy-black text */
+  --dim: #5d6a80;
+  --accent: #14b8a6;       /* teal for fills and on dark surfaces */
+  --accent-text: #0f766e;  /* teal text on light surfaces (readable contrast) */
+  --accent-soft: #d9f5f0;
   --good: #15803d;
   --good-soft: #e3f4e8;
   --warn: #b45309;
-  --bad: #c2410c;
-  --bad-soft: #fcebe1;
-  --night: #16171b;
-  --night-2: #202227;
-  --night-line: #2e3036;
-  --night-dim: #9a9ca4;
+  --bad: #c2362d;
+  --bad-soft: #fcebe9;
+  --night: #0f1729;        /* midnight navy for the sidebar and hero */
+  --night-2: #18233d;
+  --night-line: #26324f;
+  --night-dim: #95a3bf;
   color-scheme: light;
 }
 

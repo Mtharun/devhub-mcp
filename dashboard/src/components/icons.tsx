@@ -142,3 +142,17 @@ export function PriorityBars({ level, ...p }: IconProps & { level: 1 | 2 | 3 }) 
     </svg>
   );
 }
+
+export const IconSearch = (p: IconProps) => (
+  <Base {...p}>
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="M16 16l4.5 4.5" />
+  </Base>
+);
+
+export const IconKeyboard = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="2.5" y="6" width="19" height="12" rx="2" />
+    <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" />
+  </Base>
+);

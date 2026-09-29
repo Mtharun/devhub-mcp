@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDashboardData } from "./hooks/useDashboardData";
 import { todayLocal } from "./lib/dates";
 import { Sidebar, type Section } from "./components/Sidebar";
@@ -24,6 +24,24 @@ export default function App() {
     window.history.replaceState(null, "", `#${next}`);
     window.scrollTo({ top: 0 });
   };
+
+  // Keyboard shortcuts: 1-4 switch sections, "/" jumps to task search, "r" refreshes
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (event.ctrlKey || event.metaKey || event.altKey || target.closest("input, textarea")) return;
+      const index = ["1", "2", "3", "4"].indexOf(event.key);
+      if (index >= 0) select((["overview", "tasks", "jobs", "projects"] as const)[index]);
+      if (event.key === "r") void refresh();
+      if (event.key === "/") {
+        event.preventDefault();
+        select("tasks");
+        window.setTimeout(() => document.getElementById("task-search")?.focus(), 50);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   const today = todayLocal();
   const pendingTasks = data?.pendingTasks ?? [];

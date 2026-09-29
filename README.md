@@ -8,16 +8,13 @@ A personal developer assistant built as a **Model Context Protocol (MCP) server*
 
 As a 2026 full stack developer fresher, I wanted to learn MCP by building something I would actually use every day, not a toy example. I keep losing track of my projects, tasks and learning progress across different folders and notes, so I am building one local assistant that my AI can talk to. This project is the first step towards my own personal AI assistant that will eventually help with GitHub, job applications and interview preparation.
 
-## Features (v0.1)
+## Features (v0.2)
 
 - **List projects**: status, description, tech stack, local path, GitHub URL
 - **Create projects**: validated input, unique names
 - **Update projects**: partial updates (only the fields you provide change)
 - **Archive projects**: no hard deletes; archived projects can be restored
 - **Friendly errors**: clear, actionable messages the AI can act on
-
-## Features (v0.2)
-
 - **Tasks**: create, list, update and archive tasks with priorities and due dates
 - **Smart ordering**: pending tasks sorted by priority, then due date
 - **Project README access**: as an MCP resource template (`project://{name}/readme`) and a read tool
@@ -98,9 +95,8 @@ Fully quit and restart Claude Desktop after any config or code change.
 
 ## Roadmap
 
-- [x] Project management (list, create, update, archive)
-- [ ] Tasks per project (priorities, due dates)
-- [ ] Project README as an MCP resource
+- [ ] Tasks per project (priorities, due dates)   →   - [x] Tasks per project (priorities, due dates)
+- [ ] Project README as an MCP resource          →   - [x] Project README as an MCP resource
 - [ ] `plan_my_day` prompt
 - [ ] Automated tests (`node:test`)
 - [ ] TODO scanner for local project folders

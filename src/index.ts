@@ -9,12 +9,13 @@ import { registerReadmeFeatures } from "./mcp/readmeFeatures.js";
 import { registerPrompts } from "./mcp/prompts.js";
 import { registerApplicationTools } from "./mcp/applicationTools.js";
 import { registerTodoTools } from "./mcp/todoTools.js";
+import { VERSION } from "./version.js";
 
 async function main() {
   fs.mkdirSync(config.dataDir, { recursive: true });
   const db = openDatabase(config.dbPath);
 
-  const server = new McpServer({ name: "devhub-mcp", version: "0.1.0" });
+  const server = new McpServer({ name: "devhub-mcp", version: VERSION });
   registerProjectTools(server, db);
   registerTaskTools(server, db);
   const folderAccess = { allowedRoots: config.allowedRoots };
@@ -26,7 +27,7 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  console.error(`DevHub MCP server running. Database: ${config.dbPath}`);
+  console.error(`DevHub MCP server v${VERSION} running. Database: ${config.dbPath}`);
 }
 
 main().catch((error) => {

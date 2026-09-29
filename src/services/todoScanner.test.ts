@@ -64,6 +64,30 @@ describe("findTodos", () => {
     assert.equal(findTodos(db, "my-app").items.length, 0);
   });
 
+  test("only reports tags that start a comment, not TODO inside normal code or text", () => {
+    write(
+      "src/mixed.ts",
+      [
+        'const label = "TODO scanner";', // a string, not a comment
+        "/* HACK: temporary workaround */",
+        "# TODO(tharun): python-style comment",
+        "  * FIXME inside a block comment",
+        "<!-- XXX: html comment -->",
+      ].join("\n")
+    );
+    write("notes.md", "The TODO scanner is great.\n- TODO real item\n");
+
+    const found = findTodos(db, "my-app").items.map((item) => `${item.file}:${item.line} ${item.tag} ${item.text}`);
+
+    assert.deepEqual(found, [
+      "notes.md:2 TODO real item",
+      "src/mixed.ts:2 HACK temporary workaround",
+      "src/mixed.ts:3 TODO python-style comment",
+      "src/mixed.ts:4 FIXME inside a block comment",
+      "src/mixed.ts:5 XXX html comment",
+    ]);
+  });
+
   test("does not follow symlinks that point outside the project", (t) => {
     const outside = path.join(workspace, "secret-folder");
     fs.mkdirSync(outside);

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DevHub Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div>
+        <h1>DevHub</h1>
+        <p class="muted" id="today"></p>
+      </div>
+      <button type="button" id="refresh">Refresh</button>
+    </header>
+
+    <main>
+      <p class="error" id="error" hidden></p>
+
+      <section aria-label="Summary" class="tiles" id="summary"></section>
+
+      <section>
+        <h2>Pending tasks</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Task</th><th>Project</th><th>Priority</th><th>Status</th><th>Due</th></tr>
+            </thead>
+            <tbody id="tasks"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2>Projects</h2>
+        <div class="cards" id="projects"></div>
+      </section>
+
+      <section>
+        <h2>Job applications</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Company</th><th>Role</th><th>Status</th><th>Applied</th><th>Follow up</th></tr>
+            </thead>
+            <tbody id="applications"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="muted">Read-only view. Make changes by talking to Claude. <span id="version"></span></footer>
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -22,7 +22,11 @@ const MAX_FILES = 5000;
 const MAX_TEXT_LENGTH = 200;
 export const DEFAULT_MAX_RESULTS = 100;
 
-const TODO_PATTERN = /\b(TODO|FIXME|HACK|XXX|BUG)\b[:\s-]*(.*)$/;
+// The tag must come right after a comment marker (// # /* * <!-- --) or a Markdown list bullet,
+// so words like "TODO" inside normal strings or sentences are not reported.
+// Also accepts the common "TODO(tharun): ..." style.
+const TODO_PATTERN =
+  /(?:\/\/|\/\*|<!--|#|--|^\s*\*|^\s*[-*+]\s)\s*(TODO|FIXME|HACK|XXX|BUG)\b(?:\([^)]*\))?[:\s-]*(.*)$/;
 
 export interface TodoItem {
   file: string; // relative to the project folder, always with forward slashes

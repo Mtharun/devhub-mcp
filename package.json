@@ -1,18 +1,21 @@
 {
   "name": "devhub-mcp",
-  "version": "1.0.0",
-  "description": "Personal developer assistant MCP server for projects and tasks",
-  "main": "index.js",
-    "scripts": {
+  "version": "0.3.0",
+  "private": true,
+  "description": "Personal developer and career assistant MCP server: projects, tasks, job applications, TODOs and a local dashboard",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
     "build": "tsc",
     "start": "node --env-file=.env build/index.js",
+    "web": "npm run build && node --env-file=.env build/web/main.js",
     "test": "npm run build && node --test \"build/**/*.test.js\""
-
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["mcp", "model-context-protocol", "sqlite", "typescript", "developer-tools"],
+  "author": "Tharun",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.1",
     "zod": "^4.6.5"

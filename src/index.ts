@@ -6,6 +6,7 @@ import { openDatabase } from "./db/database.js";
 import { registerProjectTools } from "./mcp/projectTools.js";
 import { registerTaskTools } from "./mcp/taskTools.js";
 import { registerReadmeFeatures } from "./mcp/readmeFeatures.js";
+import { registerPrompts } from "./mcp/prompts.js";
 
 async function main() {
   fs.mkdirSync(config.dataDir, { recursive: true });
@@ -14,7 +15,9 @@ async function main() {
   const server = new McpServer({ name: "devhub-mcp", version: "0.1.0" });
   registerProjectTools(server, db);
   registerTaskTools(server, db);
-    registerReadmeFeatures(server, db);
+  registerReadmeFeatures(server, db);
+  registerPrompts(server, db);
+
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

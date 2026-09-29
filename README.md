@@ -6,7 +6,7 @@ A personal developer assistant built as a **Model Context Protocol (MCP) server*
 
 ## Why I built this
 
-WRITE 2-3 SENTENCES HERE IN YOUR OWN WORDS.
+As a 2026 full stack developer fresher, I wanted to learn MCP by building something I would actually use every day, not a toy example. I keep losing track of my projects, tasks and learning progress across different folders and notes, so I am building one local assistant that my AI can talk to. This project is the first step towards my own personal AI assistant that will eventually help with GitHub, job applications and interview preparation.
 
 ## Features (v0.1)
 

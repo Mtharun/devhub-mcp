@@ -8,6 +8,8 @@ import {
   updateProject,
 } from "../services/projectService.js";
 import { DevHubError } from "../errors.js";
+import { errorResult } from "./results.js";
+
 
 export function registerProjectTools(server: McpServer, db: DatabaseSync): void {
   // Tool 1: list_projects (read-only)
@@ -179,10 +181,3 @@ export function registerProjectTools(server: McpServer, db: DatabaseSync): void 
   );
 }
 
-// Helper: build an MCP tool error result
-function errorResult(message: string) {
-  return {
-    content: [{ type: "text" as const, text: message }],
-    isError: true,
-  };
-}

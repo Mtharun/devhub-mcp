@@ -34,7 +34,7 @@ export function PipelineStepper({ applications }: { applications: Application[] 
           count === 0
             ? "border border-dashed border-line text-dim"
             : stage.key === "interviewing"
-              ? "bg-night text-white shadow-lg shadow-black/10"
+              ? "bg-accent text-white shadow-lg shadow-blue-900/15"
               : stage.key === "offer"
                 ? "bg-good text-white"
                 : "border border-line bg-panel text-ink shadow-sm";

@@ -3,28 +3,27 @@
 @import "tailwindcss";
 
 /*
-  Layout: light working area with two dark anchors, the sidebar and the overview hero.
-  Cool paper neutrals, midnight-navy surfaces, one teal accent.
+  Layout: bright workspace. Light-blue sidebar and overview hero, white panels, one sky-blue accent.
 */
 :root {
-  --canvas: #f3f5f9;       /* cool paper */
+  --canvas: #f6f9fd;       /* near-white with a blue tint */
   --panel: #ffffff;
-  --sunken: #e8ecf3;
-  --line: #dde3ec;
-  --ink: #111a2e;          /* navy-black text */
-  --dim: #5d6a80;
-  --accent: #14b8a6;       /* teal for fills and on dark surfaces */
-  --accent-text: #0f766e;  /* teal text on light surfaces (readable contrast) */
-  --accent-soft: #d9f5f0;
+  --sunken: #e8f0fa;
+  --line: #dae6f4;
+  --ink: #0f2a44;          /* deep blue text */
+  --dim: #5a728d;
+  --accent: #1f7ae0;       /* sky blue: fills, active states */
+  --accent-text: #1765c1;  /* blue text on white (readable contrast) */
+  --accent-soft: #e1eefc;
   --good: #15803d;
   --good-soft: #e3f4e8;
   --warn: #b45309;
   --bad: #c2362d;
   --bad-soft: #fcebe9;
-  --night: #0f1729;        /* midnight navy for the sidebar and hero */
-  --night-2: #18233d;
-  --night-line: #26324f;
-  --night-dim: #95a3bf;
+  --night: #e3eefc;        /* light-blue surface: sidebar and hero */
+  --night-2: #ffffff;      /* raised items on the light-blue surface */
+  --night-line: #c9dcf3;
+  --night-dim: #56708e;
   color-scheme: light;
 }
 
@@ -88,9 +87,9 @@ h3 {
   animation: rise 260ms ease-out both;
 }
 
-/* Faint dotted grid used inside the dark hero */
+/* Faint dotted grid used inside the hero */
 .dot-grid {
-  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(rgb(31 122 224 / 0.12) 1px, transparent 1px);
   background-size: 16px 16px;
 }
 

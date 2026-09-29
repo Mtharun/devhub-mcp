@@ -47,7 +47,7 @@ export function ProjectList({ projects, pendingTasks, doneTasks }: Props) {
                 <span className="tabular-nums">{total === 0 ? "no tasks" : `${percent}%`}</span>
               </div>
               <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-sunken">
-                <div className="h-full rounded-full bg-ink transition-all duration-700" style={{ width: `${percent}%` }} />
+                <div className="h-full rounded-full bg-accent transition-all duration-700" style={{ width: `${percent}%` }} />
               </div>
             </div>
 

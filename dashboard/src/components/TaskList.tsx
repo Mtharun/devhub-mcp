@@ -92,7 +92,7 @@ export function TaskList({ pendingTasks, doneTasks }: Props) {
               aria-pressed={project === name}
               className={`rounded-full border px-3 py-1 font-mono text-[11.5px] transition ${
                 project === name
-                  ? "border-night bg-night text-white"
+                  ? "border-accent bg-accent text-white"
                   : "border-line bg-panel text-dim hover:border-ink/30 hover:text-ink"
               }`}
             >

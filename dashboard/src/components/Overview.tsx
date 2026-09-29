@@ -53,7 +53,7 @@ function ActivityChart({ doneTasks }: { doneTasks: Task[] }) {
             <span className="font-mono text-[10px] text-dim tabular-nums">{day.count > 0 ? day.count : ""}</span>
             <div
               className={`w-full rounded-md transition-all duration-700 ${
-                index === 6 ? "bg-accent" : day.count > 0 ? "bg-ink" : "bg-sunken"
+                index === 6 ? "bg-accent" : day.count > 0 ? "bg-accent/35" : "bg-sunken"
               }`}
               style={{ height: `${Math.max(6, (day.count / max) * 64)}px` }}
               title={`${day.key}: ${day.count} done`}
@@ -122,8 +122,8 @@ export function Overview({ projects, pendingTasks, doneTasks, applications, foll
   return (
     <div className="space-y-6">
       {/* Dark hero: greeting, the single most important task, and the key numbers */}
-      <section className="dot-grid relative overflow-hidden rounded-2xl bg-night p-6 text-white sm:p-8">
-        <div className="pointer-events-none absolute -top-32 -right-24 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
+      <section className="dot-grid relative overflow-hidden rounded-2xl border border-night-line bg-gradient-to-br from-night to-panel p-6 text-ink sm:p-8">
+        <div className="pointer-events-none absolute -top-32 -right-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
         <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
           <div className="min-w-0">
             <p className="font-mono text-xs text-night-dim">
@@ -134,8 +134,8 @@ export function Overview({ projects, pendingTasks, doneTasks, applications, foll
             </h1>
 
             {next ? (
-              <div className="mt-6 rounded-xl border border-night-line bg-night-2/80 p-4 backdrop-blur">
-                <p className="font-mono text-[10px] tracking-[0.14em] text-accent uppercase">Next up</p>
+              <div className="mt-6 rounded-xl border border-night-line bg-night-2/90 p-4 shadow-sm backdrop-blur">
+                <p className="font-mono text-[10px] tracking-[0.14em] text-accent-text uppercase">Next up</p>
                 <p className="mt-1.5 text-lg font-medium">{next.title}</p>
                 <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-night-dim">
                   <span>{next.projectName}</span>
@@ -146,11 +146,11 @@ export function Overview({ projects, pendingTasks, doneTasks, applications, foll
                   {next.dueDate && (
                     <>
                       <span>·</span>
-                      <span className={next.dueDate <= todayLocal() ? "text-accent" : ""}>due {relativeDay(next.dueDate).toLowerCase()}</span>
+                      <span className={next.dueDate <= todayLocal() ? "font-medium text-bad" : ""}>due {relativeDay(next.dueDate).toLowerCase()}</span>
                     </>
                   )}
                   {next.status === "in_progress" && (
-                    <span className="rounded bg-accent/15 px-1.5 py-0.5 text-accent">in progress</span>
+                    <span className="rounded bg-accent-soft px-1.5 py-0.5 text-accent-text">in progress</span>
                   )}
                 </div>
               </div>
@@ -237,7 +237,7 @@ export function Overview({ projects, pendingTasks, doneTasks, applications, foll
                       </p>
                     </div>
                     <div className="order-last col-span-2 h-1.5 overflow-hidden rounded-full bg-sunken sm:order-none sm:col-span-1">
-                      <div className="h-full rounded-full bg-ink" style={{ width: `${percent}%` }} />
+                      <div className="h-full rounded-full bg-accent" style={{ width: `${percent}%` }} />
                     </div>
                     <span className="text-right font-mono text-xs text-dim tabular-nums">{percent}%</span>
                   </li>

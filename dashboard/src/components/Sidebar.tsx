@@ -29,7 +29,7 @@ function Logo() {
         {"{}"}
       </span>
       <div className="leading-tight">
-        <p className="font-semibold text-white">DevHub</p>
+        <p className="font-semibold text-ink">DevHub</p>
         <p className="font-mono text-[11px] text-night-dim">tharun's workspace</p>
       </div>
     </div>
@@ -42,7 +42,7 @@ function RefreshButton({ loading, onRefresh }: { loading: boolean; onRefresh: ()
       type="button"
       onClick={onRefresh}
       aria-label="Refresh data"
-      className="rounded-md p-2 text-night-dim transition hover:bg-night-2 hover:text-white"
+      className="rounded-md p-2 text-night-dim transition hover:bg-night-2 hover:text-ink"
     >
       <IconRefresh className={loading ? "animate-spin" : ""} />
     </button>
@@ -53,7 +53,7 @@ function RefreshButton({ loading, onRefresh }: { loading: boolean; onRefresh: ()
 export function Sidebar({ active, counts, onSelect, loading, lastUpdated, version, onRefresh }: Props) {
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-night px-3 py-6 md:flex">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-night-line bg-night px-3 py-6 md:flex">
         <div className="px-2">
           <Logo />
         </div>
@@ -69,11 +69,11 @@ export function Sidebar({ active, counts, onSelect, loading, lastUpdated, versio
                 onClick={() => onSelect(item.id)}
                 aria-current={isActive ? "page" : undefined}
                 className={`relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition ${
-                  isActive ? "bg-night-2 font-medium text-white" : "text-night-dim hover:bg-night-2/60 hover:text-white"
+                  isActive ? "bg-night-2 font-medium text-ink shadow-sm" : "text-night-dim hover:bg-night-2/70 hover:text-ink"
                 }`}
               >
                 {isActive && <span className="absolute top-2 bottom-2 -left-3 w-1 rounded-r bg-accent" />}
-                <span className={isActive ? "text-accent" : ""}>{item.icon}</span>
+                <span className={isActive ? "text-accent-text" : ""}>{item.icon}</span>
                 <span className="flex-1">{item.label}</span>
                 {counts[item.id] !== undefined && (
                   <span
@@ -107,20 +107,20 @@ export function Sidebar({ active, counts, onSelect, loading, lastUpdated, versio
           </p>
           <p className="mt-3 flex items-center gap-1.5 border-t border-night-line pt-3 font-mono text-[10.5px] text-night-dim">
             <IconKeyboard width={14} height={14} />
-            <kbd className="rounded bg-night px-1 text-white">1</kbd>–<kbd className="rounded bg-night px-1 text-white">4</kbd> sections
-            <kbd className="ml-1 rounded bg-night px-1 text-white">/</kbd> search
+            <kbd className="rounded border border-night-line bg-panel px-1 text-ink">1</kbd>–<kbd className="rounded border border-night-line bg-panel px-1 text-ink">4</kbd> sections
+            <kbd className="ml-1 rounded border border-night-line bg-panel px-1 text-ink">/</kbd> search
           </p>
         </div>
       </aside>
 
-      <div className="sticky top-0 z-20 flex items-center justify-between bg-night px-4 py-2.5 md:hidden">
+      <div className="sticky top-0 z-20 flex items-center justify-between border-b border-night-line bg-night px-4 py-2.5 md:hidden">
         <Logo />
         <RefreshButton loading={loading} onRefresh={onRefresh} />
       </div>
 
       <nav
         aria-label="Sections"
-        className="fixed inset-x-3 bottom-3 z-20 grid grid-cols-4 rounded-2xl bg-night p-1 shadow-xl shadow-black/20 md:hidden"
+        className="fixed inset-x-3 bottom-3 z-20 grid grid-cols-4 rounded-2xl bg-night p-1 shadow-xl shadow-blue-900/15 ring-1 ring-night-line md:hidden"
         style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         {NAV.map((item) => (
@@ -130,7 +130,7 @@ export function Sidebar({ active, counts, onSelect, loading, lastUpdated, versio
             onClick={() => onSelect(item.id)}
             aria-current={active === item.id ? "page" : undefined}
             className={`flex flex-col items-center gap-0.5 rounded-xl py-2 text-[11px] transition ${
-              active === item.id ? "bg-night-2 text-accent" : "text-night-dim"
+              active === item.id ? "bg-night-2 text-accent-text shadow-sm" : "text-night-dim"
             }`}
           >
             {item.icon}

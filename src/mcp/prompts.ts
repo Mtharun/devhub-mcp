@@ -41,7 +41,7 @@ export function registerPrompts(server: McpServer, db: DatabaseSync): void {
                 `Today is ${today}. ${timeLine}\n\n` +
                 `Here are my pending DevHub tasks, sorted by priority and due date:\n` +
                 `${taskList}\n\n` +
-                `Please suggest the top 3 tasks I should work on today, in order, with one line on why for each. ` +
+                `Please suggest up to 3 tasks I should work on today, in order, with one line on why for each. ` +
                 `Flag anything overdue or due within 2 days. ` +
                 `If a task looks too big for today, suggest a smaller first step. Keep it short.`,
             },

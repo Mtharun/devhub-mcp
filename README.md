@@ -16,6 +16,12 @@ As a 2026 full stack developer fresher, I wanted to learn MCP by building someth
 - **Archive projects**: no hard deletes; archived projects can be restored
 - **Friendly errors**: clear, actionable messages the AI can act on
 
+## Features (v0.2)
+
+- **Tasks**: create, list, update and archive tasks with priorities and due dates
+- **Smart ordering**: pending tasks sorted by priority, then due date
+- **Project README access**: as an MCP resource template (`project://{name}/readme`) and a read tool
+
 ## Example
 
 | You say to Claude | What happens |
@@ -34,6 +40,10 @@ Claude Desktop (MCP host)
 src/index.ts                  → bootstrap: config, database, server
 src/mcp/projectTools.ts       → MCP layer: input validation (zod), result formatting
 src/services/projectService.ts→ service layer: business logic, friendly errors
+src/mcp/taskTools.ts          → task tools
+src/mcp/readmeFeatures.ts     → README resource template + tool
+src/services/taskService.ts   → task logic (JOIN, sorting)
+src/services/readmeService.ts → safe README file reading
 src/db/database.ts            → data layer: SQLite schema and connection
 ```
 

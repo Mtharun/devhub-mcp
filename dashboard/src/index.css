@@ -2,43 +2,30 @@
 @import "@fontsource-variable/jetbrains-mono";
 @import "tailwindcss";
 
-/* Dark mode follows a "dark" class on <html>, set from the system setting or the toggle button */
-@custom-variant dark (&:where(.dark, .dark *));
-
 /*
-  Layout: developer-workspace shell. Sidebar on the left (bottom bar on phones),
-  one working column on the right. Warm graphite neutrals, amber as the single accent.
+  Layout: light working area with two dark anchors — the sidebar and the overview hero.
+  Warm paper neutrals, near-black "night" surfaces, one signal-orange accent.
 */
 :root {
-  --canvas: #f3f1ec;   /* page ground: warm paper */
-  --panel: #fbfaf7;    /* raised surfaces */
-  --sunken: #ebe8e1;   /* sidebar, wells */
-  --line: #ddd8cd;     /* hairlines */
-  --ink: #1f1d19;      /* main text */
-  --dim: #6f6a60;      /* secondary text */
-  --accent: #b45309;   /* amber, the only brand colour */
-  --accent-soft: #f6e7cf;
+  --canvas: #f3f1ec;
+  --panel: #ffffff;
+  --sunken: #ebe7df;
+  --line: #e3ded4;
+  --ink: #17181c;
+  --dim: #6c6961;
+  --accent: #e8590c;       /* on dark surfaces and for fills */
+  --accent-text: #c2410c;  /* orange text on light surfaces (readable contrast) */
+  --accent-soft: #fdecdf;
   --good: #15803d;
+  --good-soft: #e3f4e8;
   --warn: #b45309;
   --bad: #c2410c;
-  --bad-soft: #fbe3d6;
+  --bad-soft: #fcebe1;
+  --night: #16171b;
+  --night-2: #202227;
+  --night-line: #2e3036;
+  --night-dim: #9a9ca4;
   color-scheme: light;
-}
-
-.dark {
-  --canvas: #111315;
-  --panel: #171a1d;
-  --sunken: #0c0e10;
-  --line: #262a2f;
-  --ink: #e8e4dc;
-  --dim: #8e9197;
-  --accent: #f0a73a;
-  --accent-soft: #2e2415;
-  --good: #5bd08a;
-  --warn: #f0a73a;
-  --bad: #f2876a;
-  --bad-soft: #33201a;
-  color-scheme: dark;
 }
 
 @theme inline {
@@ -51,17 +38,23 @@
   --color-ink: var(--ink);
   --color-dim: var(--dim);
   --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
   --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
   --color-warn: var(--warn);
   --color-bad: var(--bad);
   --color-bad-soft: var(--bad-soft);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-night-line: var(--night-line);
+  --color-night-dim: var(--night-dim);
 }
 
 html,
 body,
 #root {
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
@@ -78,6 +71,27 @@ h3 {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* Each page slides in gently when you switch sections */
+@keyframes rise {
+  from {
+    opacity: 0.001;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.page-enter {
+  animation: rise 260ms ease-out both;
+}
+
+/* Faint dotted grid used inside the dark hero */
+.dot-grid {
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
 
 @media (prefers-reduced-motion: reduce) {

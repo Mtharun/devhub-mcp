@@ -4,7 +4,7 @@ import { IconFolder, IconGithub } from "./icons";
 
 const STATUS: Record<ProjectStatus, { label: string; color: string }> = {
   planned: { label: "planned", color: "text-dim" },
-  in_progress: { label: "in progress", color: "text-accent" },
+  in_progress: { label: "in progress", color: "text-accent-text" },
   on_hold: { label: "on hold", color: "text-warn" },
   completed: { label: "completed", color: "text-good" },
   archived: { label: "archived", color: "text-dim" },
@@ -32,7 +32,7 @@ export function ProjectList({ projects, pendingTasks, doneTasks }: Props) {
         const github = project.githubUrl?.startsWith("https://") ? project.githubUrl : null;
 
         return (
-          <article key={project.id} className="flex flex-col rounded-lg border border-line bg-panel p-4">
+          <article key={project.id} className="flex flex-col rounded-xl border border-line bg-panel p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
             <div className="flex items-baseline justify-between gap-3">
               <h3 className="truncate font-mono text-[15px] font-semibold">{project.name}</h3>
               <span className={`shrink-0 font-mono text-xs ${status.color}`}>● {status.label}</span>
@@ -47,7 +47,7 @@ export function ProjectList({ projects, pendingTasks, doneTasks }: Props) {
                 <span className="tabular-nums">{total === 0 ? "no tasks" : `${percent}%`}</span>
               </div>
               <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-sunken">
-                <div className="h-full rounded-full bg-accent transition-all duration-700" style={{ width: `${percent}%` }} />
+                <div className="h-full rounded-full bg-ink transition-all duration-700" style={{ width: `${percent}%` }} />
               </div>
             </div>
 
@@ -62,7 +62,7 @@ export function ProjectList({ projects, pendingTasks, doneTasks }: Props) {
             {(github || project.path) && (
               <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line pt-3 font-mono text-[11px] text-dim">
                 {github && (
-                  <a href={github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-accent">
+                  <a href={github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-accent-text">
                     <IconGithub width={13} height={13} /> {github.replace("https://github.com/", "")}
                   </a>
                 )}

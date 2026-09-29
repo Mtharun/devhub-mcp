@@ -5,9 +5,12 @@ import { PriorityBars } from "./icons";
 
 export function PageHeader({ title, meta, action }: { title: string; meta?: ReactNode; action?: ReactNode }) {
   return (
-    <header className="flex flex-wrap items-end justify-between gap-3 border-b border-line pb-4">
+    <header className="flex flex-wrap items-end justify-between gap-3 border-b border-line pb-5">
       <div className="min-w-0">
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">
+          {title}
+          <span className="text-accent">.</span>
+        </h1>
         {meta && <p className="mt-1 font-mono text-xs text-dim">{meta}</p>}
       </div>
       {action}

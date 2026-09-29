@@ -14,7 +14,7 @@ export function TaskRow({ task, showProject = true }: { task: Task; showProject?
   const done = task.status === "done";
 
   return (
-    <li className="group flex items-center gap-3 px-3 py-2.5 transition hover:bg-canvas/60">
+    <li className="group flex items-center gap-3 px-3 py-2.5 transition hover:bg-canvas/70">
       <span className={`shrink-0 ${status.color}`} title={task.status.replace("_", " ")}>
         <Icon />
       </span>
@@ -56,7 +56,7 @@ export function TaskList({ pendingTasks, doneTasks }: Props) {
       {groups.map((group) => (
         <section key={group.key} className="space-y-2">
           <SectionLabel count={group.tasks.length}>{group.label}</SectionLabel>
-          <div className="overflow-hidden rounded-lg border border-line bg-panel">
+          <div className="overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
             {group.tasks.length === 0 ? (
               <Empty>{group.key === "done" ? "Nothing finished yet." : "No tasks here."}</Empty>
             ) : (

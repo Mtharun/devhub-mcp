@@ -27,8 +27,8 @@ As a 2026 full stack developer fresher, I wanted to learn MCP by building someth
 - `find_todos`: scan a project folder for `TODO`, `FIXME`, `HACK`, `XXX` and `BUG` comments
 
 **Dashboard**
-- React + Vite + Tailwind dashboard in a developer-workspace style: sidebar, overview with "up next", issue-tracker task list, job-search stages, project progress bars
-- Light/dark theme, mobile friendly, refreshes itself every 30 seconds
+- React + Vite + Tailwind dashboard: dark sidebar and hero on a light workspace, "next up" task, weekly activity chart, issue-tracker task list, job-search stages, project progress, copy-ready Claude prompts
+- Mobile friendly, refreshes itself every 30 seconds and whenever you come back to the tab
 - Served by a read-only local JSON API (`npm run web`)
 
 **Quality**

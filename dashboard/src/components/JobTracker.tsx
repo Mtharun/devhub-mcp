@@ -13,27 +13,47 @@ const STAGES: { key: ApplicationStatus; label: string }[] = [
 const STATUS_TEXT: Record<ApplicationStatus, string> = {
   wishlist: "text-dim",
   applied: "text-ink",
-  interviewing: "text-accent",
+  interviewing: "text-accent-text",
   offer: "text-good",
   rejected: "text-dim",
   withdrawn: "text-dim",
   archived: "text-dim",
 };
 
-// A horizontal stepper: each stage with its count, joined by a line
+// Stage stepper: one tile per stage, joined by arrows
 export function PipelineStepper({ applications }: { applications: Application[] }) {
+  const counts = STAGES.map((stage) => applications.filter((a) => a.status === stage.key).length);
+  const total = counts.reduce((a, b) => a + b, 0);
+
   return (
-    <ol className="grid grid-cols-4 overflow-hidden rounded-lg border border-line bg-panel">
+    <ol className="grid grid-cols-2 gap-2 sm:flex sm:items-stretch sm:gap-0">
       {STAGES.map((stage, index) => {
-        const count = applications.filter((a) => a.status === stage.key).length;
+        const count = counts[index];
+        // Interviews are what need your attention, so that stage is the one dark tile
+        const tone =
+          count === 0
+            ? "border border-dashed border-line text-dim"
+            : stage.key === "interviewing"
+              ? "bg-night text-white shadow-lg shadow-black/10"
+              : stage.key === "offer"
+                ? "bg-good text-white"
+                : "border border-line bg-panel text-ink shadow-sm";
         return (
-          <li key={stage.key} className={`relative px-3 py-3 sm:px-4 ${index > 0 ? "border-l border-line" : ""}`}>
-            <p className="truncate font-mono text-[10px] tracking-[0.08em] text-dim uppercase sm:text-[11px]">
-              {stage.label}
-            </p>
-            <p className={`mt-1 text-2xl font-semibold tabular-nums ${count > 0 ? STATUS_TEXT[stage.key] : "text-dim/60"}`}>
-              {count}
-            </p>
+          <li key={stage.key} className="flex items-center sm:flex-1">
+            {index > 0 && (
+              <span aria-hidden="true" className="hidden px-1.5 font-mono text-lg text-dim sm:inline">
+                →
+              </span>
+            )}
+            <div className={`flex-1 rounded-xl px-4 py-3 ${tone}`}>
+              <p className="font-mono text-[10px] tracking-[0.12em] uppercase opacity-75">{stage.label}</p>
+              <p className="mt-0.5 flex items-baseline gap-1.5">
+                <span className="text-2xl font-semibold tabular-nums">{count}</span>
+                {total > 0 && count > 0 && (
+                  <span className="font-mono text-[10.5px] opacity-70">{Math.round((count / total) * 100)}%</span>
+                )}
+              </p>
+            </div>
           </li>
         );
       })}
@@ -67,7 +87,7 @@ export function ApplicationRow({ application }: { application: Application }) {
         {application.followUpDate && <Due date={application.followUpDate} prefix="follow up " />}
       </span>
       {link && (
-        <a href={link} target="_blank" rel="noopener noreferrer" aria-label={`Open the ${application.company} job posting`} className="text-dim hover:text-accent">
+        <a href={link} target="_blank" rel="noopener noreferrer" aria-label={`Open the ${application.company} job posting`} className="text-dim hover:text-accent-text">
           <IconExternal width={16} height={16} />
         </a>
       )}
@@ -87,7 +107,7 @@ export function JobTracker({ applications }: { applications: Application[] }) {
 
       <section className="space-y-2">
         <SectionLabel count={sorted.length}>Active applications</SectionLabel>
-        <div className="overflow-hidden rounded-lg border border-line bg-panel">
+        <div className="overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
           {sorted.length === 0 ? (
             <Empty>No applications yet. When you apply somewhere, tell Claude: "In DevHub, I applied to …"</Empty>
           ) : (
@@ -103,7 +123,7 @@ export function JobTracker({ applications }: { applications: Application[] }) {
       {closed.length > 0 && (
         <section className="space-y-2">
           <SectionLabel count={closed.length}>Closed</SectionLabel>
-          <div className="overflow-hidden rounded-lg border border-line bg-panel opacity-80">
+          <div className="overflow-hidden rounded-xl border border-line bg-panel shadow-sm opacity-80">
             <ul className="divide-y divide-line">
               {closed.map((application) => (
                 <ApplicationRow key={application.id} application={application} />

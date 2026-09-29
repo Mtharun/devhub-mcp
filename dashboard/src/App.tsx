@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useDashboardData } from "./hooks/useDashboardData";
-import { useTheme } from "./hooks/useTheme";
 import { todayLocal } from "./lib/dates";
 import { Sidebar, type Section } from "./components/Sidebar";
 import { Overview } from "./components/Overview";
@@ -18,7 +17,6 @@ function initialSection(): Section {
 
 export default function App() {
   const { data, error, loading, lastUpdated, refresh } = useDashboardData();
-  const { theme, toggle } = useTheme();
   const [section, setSection] = useState<Section>(initialSection);
 
   const select = (next: Section) => {
@@ -49,15 +47,13 @@ export default function App() {
         loading={loading}
         lastUpdated={lastUpdated}
         version={data?.version}
-        theme={theme}
         onRefresh={() => void refresh()}
-        onToggleTheme={toggle}
       />
 
-      <main className="min-w-0 flex-1 px-4 pt-6 pb-24 sm:px-8 md:pt-10 md:pb-12">
+      <main className="min-w-0 flex-1 px-4 pt-6 pb-28 sm:px-8 md:pt-10 md:pb-12">
         <div className="mx-auto max-w-5xl">
           {error && (
-            <div role="alert" className="mb-6 rounded-lg border border-bad/40 bg-bad-soft p-4 text-sm">
+            <div role="alert" className="mb-6 rounded-xl border border-bad/40 bg-bad-soft p-4 text-sm">
               <p className="font-semibold text-bad">Can't reach the DevHub API</p>
               <p className="mt-1 text-dim">{error}</p>
               <p className="mt-1 text-dim">
@@ -73,7 +69,7 @@ export default function App() {
               <div className="h-48 animate-pulse rounded-lg bg-sunken" />
             </div>
           ) : (
-            <>
+            <div key={section} className="page-enter">
               {section === "overview" && (
                 <Overview
                   projects={projects}
@@ -111,7 +107,7 @@ export default function App() {
                   <ProjectList projects={projects} pendingTasks={pendingTasks} doneTasks={doneTasks} />
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
       </main>

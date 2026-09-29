@@ -89,6 +89,11 @@ export function openDatabase(dbPath: string): DatabaseSync {
   db.exec("PRAGMA foreign_keys = ON;");
   // Claude Desktop and the web dashboard may open the same file; wait instead of failing when it is busy.
   db.exec("PRAGMA busy_timeout = 5000;");
-  migrate(db);
+  try {
+    migrate(db);
+  } catch (error) {
+    db.close(); // release the file (Windows keeps open files locked)
+    throw error;
+  }
   return db;
 }

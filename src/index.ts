@@ -7,6 +7,7 @@ import { registerProjectTools } from "./mcp/projectTools.js";
 import { registerTaskTools } from "./mcp/taskTools.js";
 import { registerReadmeFeatures } from "./mcp/readmeFeatures.js";
 import { registerPrompts } from "./mcp/prompts.js";
+import { registerApplicationTools } from "./mcp/applicationTools.js";
 
 async function main() {
   fs.mkdirSync(config.dataDir, { recursive: true });
@@ -16,8 +17,8 @@ async function main() {
   registerProjectTools(server, db);
   registerTaskTools(server, db);
   registerReadmeFeatures(server, db);
+  registerApplicationTools(server, db);
   registerPrompts(server, db);
-
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

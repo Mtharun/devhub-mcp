@@ -181,3 +181,17 @@ export function archiveProject(db: DatabaseSync, name: string): Project {
 
   return toProject(row);
 }
+
+
+export function getProjectByName(db: DatabaseSync, name: string): Project {
+  const row = db
+    .prepare("SELECT * FROM projects WHERE name = ?")
+    .get(name) as unknown as ProjectRow | undefined;
+
+  if (!row) {
+    throw new DevHubError(
+      `No project named "${name}" was found. Use list_projects to see the available projects.`
+    );
+  }
+  return toProject(row);
+}

@@ -1,4 +1,5 @@
 import type { DatabaseSync } from "node:sqlite";
+import { DevHubError } from "../errors.js";
 
 export type ProjectStatus =
   | "planned"
@@ -54,28 +55,48 @@ function toProject(row: ProjectRow): Project {
   };
 }
 
+const SQLITE_CONSTRAINT_UNIQUE = 2067;
+
+function isUniqueViolation(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "errcode" in error &&
+    error.errcode === SQLITE_CONSTRAINT_UNIQUE
+  );
+}
+
 export function createProject(db: DatabaseSync, input: CreateProjectInput): Project {
   const now = new Date().toISOString();
 
-  const row = db
-    .prepare(
-      `INSERT INTO projects
-         (name, description, status, tech_stack, path, github_url, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-       RETURNING *`
-    )
-    .get(
-      input.name,
-      input.description ?? null,
-      input.status ?? "planned",
-      JSON.stringify(input.techStack ?? []),
-      input.path ?? null,
-      input.githubUrl ?? null,
-      now,
-      now
-    ) as unknown as ProjectRow;
+  try {
+    const row = db
+      .prepare(
+        `INSERT INTO projects
+           (name, description, status, tech_stack, path, github_url, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+         RETURNING *`
+      )
+      .get(
+        input.name,
+        input.description ?? null,
+        input.status ?? "planned",
+        JSON.stringify(input.techStack ?? []),
+        input.path ?? null,
+        input.githubUrl ?? null,
+        now,
+        now
+      ) as unknown as ProjectRow;
 
-  return toProject(row);
+    return toProject(row);
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      throw new DevHubError(
+        `A project named "${input.name}" already exists. Use a different name or update the existing project.`
+      );
+    }
+    throw error;
+  }
 }
 
 export function listProjects(db: DatabaseSync, includeArchived = false): Project[] {

@@ -95,8 +95,9 @@ Fully quit and restart Claude Desktop after any config or code change.
 
 ## Roadmap
 
-- [ ] Tasks per project (priorities, due dates)   →   - [x] Tasks per project (priorities, due dates)
-- [ ] Project README as an MCP resource          →   - [x] Project README as an MCP resource
+- [x] Project management (list, create, update, archive)
+- [x] Tasks per project (priorities, due dates)
+- [x] Project README as an MCP resource
 - [ ] `plan_my_day` prompt
 - [ ] Automated tests (`node:test`)
 - [ ] TODO scanner for local project folders

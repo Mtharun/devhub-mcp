@@ -1,12 +1,12 @@
 import { useState } from "react";
 import type { Task, TaskStatus } from "../types";
-import { Due, Empty, Priority, SectionLabel, Tag } from "./ui";
+import { Card, Due, Empty, Priority, SectionLabel, Tag, tintFor } from "./ui";
 import { IconSearch, StatusDone, StatusProgress, StatusTodo } from "./icons";
 
 const STATUS_ICON: Record<Exclude<TaskStatus, "archived">, { icon: typeof StatusTodo; color: string }> = {
   todo: { icon: StatusTodo, color: "text-dim" },
-  in_progress: { icon: StatusProgress, color: "text-accent" },
-  done: { icon: StatusDone, color: "text-good" },
+  in_progress: { icon: StatusProgress, color: "text-sky-ink" },
+  done: { icon: StatusDone, color: "text-mint-ink" },
 };
 
 export function TaskRow({ task, showProject = true }: { task: Task; showProject?: boolean }) {
@@ -15,22 +15,22 @@ export function TaskRow({ task, showProject = true }: { task: Task; showProject?
   const done = task.status === "done";
 
   return (
-    <li className="group flex items-center gap-3 px-3 py-2.5 transition hover:bg-canvas/70">
+    <li className="group flex items-center gap-3 px-5 py-3 transition hover:bg-canvas">
       <span className={`shrink-0 ${status.color}`} title={task.status.replace("_", " ")}>
         <Icon />
       </span>
-      <span className="hidden w-10 shrink-0 font-mono text-xs text-dim tabular-nums sm:inline">#{task.id}</span>
+      <span className="hidden w-9 shrink-0 font-mono text-xs text-dim/80 tabular-nums sm:inline">#{task.id}</span>
       <div className="min-w-0 flex-1">
-        <p className={`truncate ${done ? "text-dim line-through decoration-dim/50" : ""}`}>{task.title}</p>
+        <p className={`truncate font-medium ${done ? "text-dim line-through decoration-dim/50" : ""}`}>{task.title}</p>
         {task.description && <p className="truncate text-xs text-dim">{task.description}</p>}
       </div>
       {showProject && (
         <span className="hidden sm:inline-flex">
-          <Tag>{task.projectName}</Tag>
+          <Tag tint={tintFor(task.projectName)}>{task.projectName}</Tag>
         </span>
       )}
       <span className="shrink-0 text-right sm:w-24">{!done && task.dueDate ? <Due date={task.dueDate} /> : null}</span>
-      <span className="w-4 shrink-0">{!done && <Priority priority={task.priority} />}</span>
+      <span className="hidden w-16 shrink-0 text-right sm:inline">{!done && <Priority priority={task.priority} />}</span>
     </li>
   );
 }
@@ -73,14 +73,14 @@ export function TaskList({ pendingTasks, doneTasks }: Props) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <label className="relative block sm:w-72">
           <span className="sr-only">Search tasks</span>
-          <IconSearch className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-dim" width={16} height={16} />
+          <IconSearch className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-dim" width={16} height={16} />
           <input
             id="task-search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search tasks or #id"
-            className="w-full rounded-lg border border-line bg-panel py-2 pr-3 pl-9 text-sm shadow-sm outline-none placeholder:text-dim focus:border-accent focus:ring-2 focus:ring-accent/20"
+            className="w-full rounded-full border border-line bg-panel py-2.5 pr-4 pl-10 text-sm outline-none placeholder:text-dim focus:border-accent focus:ring-4 focus:ring-accent/15"
           />
         </label>
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by project">
@@ -90,10 +90,10 @@ export function TaskList({ pendingTasks, doneTasks }: Props) {
               type="button"
               onClick={() => setProject(name)}
               aria-pressed={project === name}
-              className={`rounded-full border px-3 py-1 font-mono text-[11.5px] transition ${
+              className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-semibold transition ${
                 project === name
-                  ? "border-accent bg-accent text-white"
-                  : "border-line bg-panel text-dim hover:border-ink/30 hover:text-ink"
+                  ? "border-transparent bg-lav text-lav-ink"
+                  : "border-line bg-panel text-dim hover:text-ink"
               }`}
             >
               {name ?? "all projects"}
@@ -103,7 +103,7 @@ export function TaskList({ pendingTasks, doneTasks }: Props) {
       </div>
 
       {filtering && groups.every((group) => group.tasks.length === 0) && (
-        <div className="rounded-xl border border-dashed border-line bg-panel">
+        <div className="rounded-3xl border border-dashed border-line bg-panel">
           <Empty>No tasks match{query ? ` "${query}"` : ""}{project ? ` in ${project}` : ""}.</Empty>
         </div>
       )}
@@ -113,7 +113,7 @@ export function TaskList({ pendingTasks, doneTasks }: Props) {
         .map((group) => (
         <section key={group.key} className="space-y-2">
           <SectionLabel count={group.tasks.length}>{group.label}</SectionLabel>
-          <div className="overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
+          <Card className="overflow-hidden">
             {group.tasks.length === 0 ? (
               <Empty>{group.key === "done" ? "Nothing finished yet." : "No tasks here."}</Empty>
             ) : (
@@ -123,7 +123,7 @@ export function TaskList({ pendingTasks, doneTasks }: Props) {
                 ))}
               </ul>
             )}
-          </div>
+          </Card>
         </section>
       ))}
     </div>

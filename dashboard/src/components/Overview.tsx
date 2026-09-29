@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { Application, Project, Task } from "../types";
 import { greeting, relativeDay, todayLocal } from "../lib/dates";
 import { TaskRow } from "./TaskList";
 import { ApplicationRow } from "./JobTracker";
-import { Empty, Priority, SectionLabel } from "./ui";
+import { Card, Empty, Priority, SectionLabel, TINT, Tag, tintFor, type Tint } from "./ui";
+import { IconBell, IconBriefcase, IconChecklist, IconFolder, IconSparkle } from "./icons";
 
 interface Props {
   projects: Project[];
@@ -27,7 +28,7 @@ function weeklyActivity(doneTasks: Task[]) {
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - (6 - i));
-    return { key: todayLocal(date), label: date.toLocaleDateString(undefined, { weekday: "narrow" }), count: 0 };
+    return { key: todayLocal(date), label: date.toLocaleDateString(undefined, { weekday: "short" }), count: 0 };
   });
   for (const task of doneTasks) {
     const day = days.find((d) => d.key === todayLocal(new Date(task.updatedAt)));
@@ -42,29 +43,27 @@ function ActivityChart({ doneTasks }: { doneTasks: Task[] }) {
   const max = Math.max(1, ...days.map((d) => d.count));
 
   return (
-    <section className="rounded-xl border border-line bg-panel p-4">
+    <Card className="p-5">
       <div className="flex items-baseline justify-between">
         <SectionLabel>Done this week</SectionLabel>
-        <span className="text-2xl font-semibold tabular-nums">{total}</span>
+        <span className="text-3xl font-bold text-lav-ink tabular-nums">{total}</span>
       </div>
-      <div className="mt-4 flex h-24 items-end gap-2" role="img" aria-label={`${total} tasks finished in the last 7 days`}>
+      <div className="mt-5 flex h-28 items-end gap-2" role="img" aria-label={`${total} tasks finished in the last 7 days`}>
         {days.map((day, index) => (
           <div key={day.key} className="flex flex-1 flex-col items-center gap-1.5">
-            <span className="font-mono text-[10px] text-dim tabular-nums">{day.count > 0 ? day.count : ""}</span>
+            <span className="text-[11px] font-semibold text-dim tabular-nums">{day.count > 0 ? day.count : ""}</span>
             <div
-              className={`w-full rounded-md transition-all duration-700 ${
-                index === 6 ? "bg-accent" : day.count > 0 ? "bg-accent/35" : "bg-sunken"
+              className={`w-full rounded-xl transition-all duration-700 ${
+                index === 6 ? "bg-accent" : day.count > 0 ? "bg-lav" : "bg-sunken"
               }`}
-              style={{ height: `${Math.max(6, (day.count / max) * 64)}px` }}
+              style={{ height: `${Math.max(8, (day.count / max) * 72)}px` }}
               title={`${day.key}: ${day.count} done`}
             />
-            <span className={`font-mono text-[10px] ${index === 6 ? "font-semibold text-accent-text" : "text-dim"}`}>
-              {day.label}
-            </span>
+            <span className={`text-[11px] ${index === 6 ? "font-bold text-lav-ink" : "text-dim"}`}>{day.label}</span>
           </div>
         ))}
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -82,133 +81,141 @@ function PromptList() {
   };
 
   return (
-    <section className="space-y-2">
-      <SectionLabel>Ask Claude</SectionLabel>
-      <ul className="space-y-1.5">
+    <Card className="p-5">
+      <SectionLabel>
+        <IconSparkle className="text-lav-ink" /> Ask Claude
+      </SectionLabel>
+      <p className="mt-1 text-xs text-dim">Click a prompt to copy it, then paste it in Claude.</p>
+      <ul className="mt-3 space-y-2">
         {PROMPTS.map((prompt) => (
           <li key={prompt}>
             <button
               type="button"
               onClick={() => copy(prompt)}
-              className="group flex w-full items-center gap-2 rounded-lg border border-line bg-panel px-3 py-2 text-left font-mono text-[11.5px] text-dim transition hover:-translate-y-px hover:border-ink/30 hover:text-ink hover:shadow-sm"
+              className={`flex w-full items-center gap-2 rounded-2xl px-3.5 py-2.5 text-left text-[13px] transition hover:-translate-y-px ${
+                copied === prompt ? "bg-mint text-mint-ink" : "bg-sunken text-ink/80 hover:bg-lav hover:text-lav-ink"
+              }`}
             >
-              <span className="text-accent-text">›</span>
               <span className="min-w-0 flex-1">{prompt}</span>
-              <span className={`shrink-0 text-[10px] ${copied === prompt ? "text-good" : "text-dim/0 group-hover:text-dim"}`}>
-                {copied === prompt ? "copied ✓" : "copy"}
-              </span>
+              <span className="shrink-0 text-[11px] font-semibold">{copied === prompt ? "Copied" : ""}</span>
             </button>
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
+  );
+}
+
+function StatCard({ tint, label, value, note, icon }: { tint: Tint; label: string; value: number; note: string; icon: ReactNode }) {
+  const t = TINT[tint];
+  return (
+    <div className={`rounded-3xl p-5 ${t.bg}`}>
+      <div className={`flex items-center justify-between ${t.ink}`}>
+        <span className="text-sm font-semibold">{label}</span>
+        <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-panel/70">{icon}</span>
+      </div>
+      <p className={`mt-3 text-4xl font-bold tabular-nums ${t.ink}`}>{value}</p>
+      <p className={`mt-1 text-xs ${t.ink} opacity-75`}>{note}</p>
+    </div>
   );
 }
 
 export function Overview({ projects, pendingTasks, doneTasks, applications, followUps, onOpenTasks }: Props) {
   const [next, ...rest] = pendingTasks;
   const upNext = rest.slice(0, 4);
-  const highCount = pendingTasks.filter((t) => t.priority === "high").length;
   const inProgress = pendingTasks.filter((t) => t.status === "in_progress").length;
   const activeApps = applications.filter((a) => ["wishlist", "applied", "interviewing", "offer"].includes(a.status));
+  const interviewing = applications.filter((a) => a.status === "interviewing").length;
   const doneShare = pendingTasks.length + doneTasks.length === 0 ? 0 : doneTasks.length / (pendingTasks.length + doneTasks.length);
 
-  const heroStats = [
-    { label: "Open", value: pendingTasks.length, note: `${highCount} high` },
-    { label: "In progress", value: inProgress, note: "right now" },
-    { label: "Applications", value: activeApps.length, note: `${followUps.length} follow-up${followUps.length === 1 ? "" : "s"} due` },
-  ];
-
   return (
-    <div className="space-y-6">
-      {/* Dark hero: greeting, the single most important task, and the key numbers */}
-      <section className="dot-grid relative overflow-hidden rounded-2xl border border-night-line bg-gradient-to-br from-night to-panel p-6 text-ink sm:p-8">
-        <div className="pointer-events-none absolute -top-32 -right-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
-          <div className="min-w-0">
-            <p className="font-mono text-xs text-night-dim">
+    <div className="space-y-8">
+      {/* Soft gradient hero: greeting and the single most important task */}
+      <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-lav via-sky to-mint p-6 sm:p-9">
+        <div className="pointer-events-none absolute -right-16 -bottom-24 h-72 w-72 rounded-full bg-peach/80 blur-3xl" />
+        <div className="relative grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
+          <div>
+            <p className="text-sm font-medium text-ink/60">
               {new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}
             </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              {greeting()}, Tharun<span className="text-accent">.</span>
+            <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-[2.6rem] sm:leading-tight">
+              {greeting()}, Tharun
             </h1>
-
-            {next ? (
-              <div className="mt-6 rounded-xl border border-night-line bg-night-2/90 p-4 shadow-sm backdrop-blur">
-                <p className="font-mono text-[10px] tracking-[0.14em] text-accent-text uppercase">Next up</p>
-                <p className="mt-1.5 text-lg font-medium">{next.title}</p>
-                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-night-dim">
-                  <span>{next.projectName}</span>
-                  <span>·</span>
-                  <span className="inline-flex items-center gap-1 capitalize">
-                    <Priority priority={next.priority} /> {next.priority}
-                  </span>
-                  {next.dueDate && (
-                    <>
-                      <span>·</span>
-                      <span className={next.dueDate <= todayLocal() ? "font-medium text-bad" : ""}>due {relativeDay(next.dueDate).toLowerCase()}</span>
-                    </>
-                  )}
-                  {next.status === "in_progress" && (
-                    <span className="rounded bg-accent-soft px-1.5 py-0.5 text-accent-text">in progress</span>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <p className="mt-6 text-night-dim">Nothing pending. A good moment to plan the next project.</p>
-            )}
-          </div>
-
-          <div className="flex flex-col justify-between gap-6 lg:w-72">
-            <dl className="grid grid-cols-3 gap-3 lg:grid-cols-1">
-              {heroStats.map((stat) => (
-                <div key={stat.label} className="lg:flex lg:items-baseline lg:justify-between lg:border-b lg:border-night-line lg:pb-3">
-                  <dt className="font-mono text-[10px] tracking-[0.12em] text-night-dim uppercase">{stat.label}</dt>
-                  <dd className="mt-1 lg:mt-0 lg:text-right">
-                    <span className="text-3xl font-semibold tabular-nums">{stat.value}</span>
-                    <span className="block font-mono text-[10.5px] text-night-dim">{stat.note}</span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-            <div>
-              <div className="flex justify-between font-mono text-[10.5px] text-night-dim">
-                <span>overall progress</span>
+            <p className="mt-2 max-w-md text-ink/70">
+              {pendingTasks.length === 0
+                ? "Nothing pending. A good moment to plan the next project."
+                : `You have ${pendingTasks.length} open task${pendingTasks.length === 1 ? "" : "s"}${
+                    followUps.length > 0 ? ` and ${followUps.length} job follow-up${followUps.length === 1 ? "" : "s"} due` : ""
+                  }.`}
+            </p>
+            <div className="mt-5 max-w-md">
+              <div className="flex justify-between text-xs font-semibold text-ink/60">
+                <span>Overall progress</span>
                 <span className="tabular-nums">{Math.round(doneShare * 100)}%</span>
               </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-night-line">
+              <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-panel/60">
                 <div className="h-full rounded-full bg-accent transition-all duration-700" style={{ width: `${doneShare * 100}%` }} />
               </div>
             </div>
           </div>
+
+          {next ? (
+            <div className="rounded-3xl bg-panel/90 p-5 shadow-xl shadow-lav-ink/10 backdrop-blur">
+              <p className="text-xs font-bold tracking-wide text-lav-ink uppercase">Next up</p>
+              <p className="mt-2 text-lg leading-snug font-bold">{next.title}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <Tag tint={tintFor(next.projectName)}>{next.projectName}</Tag>
+                <Priority priority={next.priority} />
+                {next.status === "in_progress" && <Tag tint="sky">In progress</Tag>}
+              </div>
+              {next.dueDate && (
+                <p className={`mt-3 text-sm font-medium ${next.dueDate <= todayLocal() ? "text-rose-ink" : "text-dim"}`}>
+                  Due {relativeDay(next.dueDate).toLowerCase()}
+                </p>
+              )}
+            </div>
+          ) : null}
         </div>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <div className="min-w-0 space-y-6">
+      <section aria-label="Summary" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatCard tint="lav" label="Open tasks" value={pendingTasks.length} note={`${pendingTasks.filter((t) => t.priority === "high").length} high priority`} icon={<IconChecklist />} />
+        <StatCard tint="sky" label="In progress" value={inProgress} note="started" icon={<IconFolder />} />
+        <StatCard tint="mint" label="Applications" value={activeApps.length} note={`${interviewing} interviewing`} icon={<IconBriefcase />} />
+        <StatCard
+          tint={followUps.length > 0 ? "rose" : "peach"}
+          label="Follow-ups due"
+          value={followUps.length}
+          note={followUps.length > 0 ? "reach out today" : "all caught up"}
+          icon={<IconBell />}
+        />
+      </section>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="min-w-0 space-y-8">
           {followUps.length > 0 && (
-            <section className="space-y-2">
+            <section className="space-y-3">
               <SectionLabel count={followUps.length}>Follow-ups due</SectionLabel>
-              <div className="overflow-hidden rounded-xl border border-bad/30 bg-panel shadow-sm">
+              <Card className="overflow-hidden">
                 <ul className="divide-y divide-line">
                   {followUps.map((application) => (
                     <ApplicationRow key={application.id} application={application} />
                   ))}
                 </ul>
-              </div>
+              </Card>
             </section>
           )}
 
-          <section className="space-y-2">
+          <section className="space-y-3">
             <div className="flex items-center justify-between">
               <SectionLabel>After that</SectionLabel>
               {pendingTasks.length > 0 && (
-                <button type="button" onClick={onOpenTasks} className="font-mono text-xs text-accent-text hover:underline">
-                  all {pendingTasks.length} tasks →
+                <button type="button" onClick={onOpenTasks} className="rounded-full px-3 py-1 text-sm font-semibold text-lav-ink hover:bg-lav">
+                  All {pendingTasks.length} tasks →
                 </button>
               )}
             </div>
-            <div className="overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
+            <Card className="overflow-hidden">
               {upNext.length === 0 ? (
                 <Empty>{next ? "That's the only open task." : "No open tasks. Ask Claude to add one."}</Empty>
               ) : (
@@ -218,32 +225,31 @@ export function Overview({ projects, pendingTasks, doneTasks, applications, foll
                   ))}
                 </ul>
               )}
-            </div>
+            </Card>
           </section>
 
-          <section className="space-y-2">
+          <section className="space-y-3">
             <SectionLabel count={projects.length}>Projects</SectionLabel>
-            <ul className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-panel shadow-sm">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {projects.map((project) => {
                 const open = pendingTasks.filter((t) => t.projectId === project.id).length;
                 const done = doneTasks.filter((t) => t.projectId === project.id).length;
                 const percent = open + done === 0 ? 0 : Math.round((done / (open + done)) * 100);
+                const tint = TINT[tintFor(project.name)];
                 return (
-                  <li key={project.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[minmax(0,12rem)_minmax(0,1fr)_3rem]">
-                    <div className="min-w-0">
-                      <p className="truncate font-mono text-[13px] font-semibold">{project.name}</p>
-                      <p className="truncate font-mono text-[11px] text-dim">
-                        {open} open · {project.techStack.slice(0, 3).join(" · ") || "no stack yet"}
-                      </p>
+                  <div key={project.id} className={`rounded-3xl p-4 ${tint.bg}`}>
+                    <div className={`flex items-baseline justify-between gap-2 ${tint.ink}`}>
+                      <span className="truncate font-bold">{project.name}</span>
+                      <span className="text-sm font-bold tabular-nums">{percent}%</span>
                     </div>
-                    <div className="order-last col-span-2 h-1.5 overflow-hidden rounded-full bg-sunken sm:order-none sm:col-span-1">
-                      <div className="h-full rounded-full bg-accent" style={{ width: `${percent}%` }} />
+                    <p className={`mt-0.5 text-xs ${tint.ink} opacity-75`}>{open} open</p>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-panel/70">
+                      <div className={`h-full rounded-full ${tint.bar}`} style={{ width: `${percent}%` }} />
                     </div>
-                    <span className="text-right font-mono text-xs text-dim tabular-nums">{percent}%</span>
-                  </li>
+                  </div>
                 );
               })}
-            </ul>
+            </div>
           </section>
         </div>
 

@@ -1,34 +1,33 @@
-@import "@fontsource-variable/ibm-plex-sans";
+@import "@fontsource-variable/plus-jakarta-sans";
 @import "@fontsource-variable/jetbrains-mono";
 @import "tailwindcss";
 
 /*
-  Layout: bright workspace. Light-blue sidebar and overview hero, white panels, one sky-blue accent.
+  Layout: top navbar, full-width content, big rounded cards.
+  Warm white ground, soft pastel tints (lavender, sky, mint, peach, butter, rose),
+  each paired with a deeper "ink" of the same hue for text on that tint.
 */
 :root {
-  --canvas: #f6f9fd;       /* near-white with a blue tint */
+  --canvas: #faf9f6;
   --panel: #ffffff;
-  --sunken: #e8f0fa;
-  --line: #dae6f4;
-  --ink: #0f2a44;          /* deep blue text */
-  --dim: #5a728d;
-  --accent: #1f7ae0;       /* sky blue: fills, active states */
-  --accent-text: #1765c1;  /* blue text on white (readable contrast) */
-  --accent-soft: #e1eefc;
-  --good: #15803d;
-  --good-soft: #e3f4e8;
-  --warn: #b45309;
-  --bad: #c2362d;
-  --bad-soft: #fcebe9;
-  --night: #e3eefc;        /* light-blue surface: sidebar and hero */
-  --night-2: #ffffff;      /* raised items on the light-blue surface */
-  --night-line: #c9dcf3;
-  --night-dim: #56708e;
+  --sunken: #f2f0eb;
+  --line: #ece9e2;
+  --ink: #2a2833;
+  --dim: #77747f;
+  --accent: #6d5ce7;       /* deep lavender: active states and highlights */
+  --accent-soft: #eeeafd;
+
+  --lav: #eeeafd;   --lav-ink: #5a47cf;
+  --sky: #e4f1fc;   --sky-ink: #2465a3;
+  --mint: #dff4ea;  --mint-ink: #1d7550;
+  --peach: #fde9dd; --peach-ink: #a9522b;
+  --butter: #fcf2d4; --butter-ink: #86610f;
+  --rose: #fde6e9;  --rose-ink: #b23a52;
   color-scheme: light;
 }
 
 @theme inline {
-  --font-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, "Cascadia Code", Consolas, monospace;
   --color-canvas: var(--canvas);
   --color-panel: var(--panel);
@@ -37,17 +36,19 @@
   --color-ink: var(--ink);
   --color-dim: var(--dim);
   --color-accent: var(--accent);
-  --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
-  --color-good: var(--good);
-  --color-good-soft: var(--good-soft);
-  --color-warn: var(--warn);
-  --color-bad: var(--bad);
-  --color-bad-soft: var(--bad-soft);
-  --color-night: var(--night);
-  --color-night-2: var(--night-2);
-  --color-night-line: var(--night-line);
-  --color-night-dim: var(--night-dim);
+  --color-lav: var(--lav);
+  --color-lav-ink: var(--lav-ink);
+  --color-sky: var(--sky);
+  --color-sky-ink: var(--sky-ink);
+  --color-mint: var(--mint);
+  --color-mint-ink: var(--mint-ink);
+  --color-peach: var(--peach);
+  --color-peach-ink: var(--peach-ink);
+  --color-butter: var(--butter);
+  --color-butter-ink: var(--butter-ink);
+  --color-rose: var(--rose);
+  --color-rose-ink: var(--rose-ink);
 }
 
 html,
@@ -58,7 +59,7 @@ body,
 
 body {
   @apply bg-canvas font-sans text-ink antialiased;
-  font-size: 14px;
+  font-size: 14.5px;
 }
 
 h1,
@@ -72,11 +73,10 @@ h3 {
   outline-offset: 2px;
 }
 
-/* Each page slides in gently when you switch sections */
 @keyframes rise {
   from {
     opacity: 0.001;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -84,13 +84,7 @@ h3 {
   }
 }
 .page-enter {
-  animation: rise 260ms ease-out both;
-}
-
-/* Faint dotted grid used inside the hero */
-.dot-grid {
-  background-image: radial-gradient(rgb(31 122 224 / 0.12) 1px, transparent 1px);
-  background-size: 16px 16px;
+  animation: rise 280ms ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {

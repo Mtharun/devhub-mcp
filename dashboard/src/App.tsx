@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDashboardData } from "./hooks/useDashboardData";
 import { todayLocal } from "./lib/dates";
-import { Sidebar, type Section } from "./components/Sidebar";
+import { TopNav, type Section } from "./components/TopNav";
 import { Overview } from "./components/Overview";
 import { TaskList } from "./components/TaskList";
 import { JobTracker } from "./components/JobTracker";
@@ -52,8 +52,8 @@ export default function App() {
   const followUps = activeApplications.filter((a) => a.followUpDate !== null && a.followUpDate <= today);
 
   return (
-    <div className="md:flex">
-      <Sidebar
+    <div>
+      <TopNav
         active={section}
         counts={{
           overview: undefined,
@@ -64,15 +64,14 @@ export default function App() {
         onSelect={select}
         loading={loading}
         lastUpdated={lastUpdated}
-        version={data?.version}
         onRefresh={() => void refresh()}
       />
 
-      <main className="min-w-0 flex-1 px-4 pt-6 pb-28 sm:px-8 md:pt-10 md:pb-12">
-        <div className="mx-auto max-w-5xl">
+      <main className="px-4 pt-6 pb-28 sm:px-6 md:pt-8 md:pb-12">
+        <div className="mx-auto max-w-6xl">
           {error && (
-            <div role="alert" className="mb-6 rounded-xl border border-bad/40 bg-bad-soft p-4 text-sm">
-              <p className="font-semibold text-bad">Can't reach the DevHub API</p>
+            <div role="alert" className="mb-6 rounded-3xl bg-rose p-5 text-sm">
+              <p className="font-semibold text-rose-ink">Can't reach the DevHub API</p>
               <p className="mt-1 text-dim">{error}</p>
               <p className="mt-1 text-dim">
                 Start it with <code className="font-mono text-ink">npm run web</code> in the devhub-mcp folder.
@@ -82,9 +81,9 @@ export default function App() {
 
           {!data && !error ? (
             <div className="space-y-3" aria-busy="true">
-              <div className="h-8 w-64 animate-pulse rounded bg-sunken" />
-              <div className="h-20 animate-pulse rounded-lg bg-sunken" />
-              <div className="h-48 animate-pulse rounded-lg bg-sunken" />
+              <div className="h-48 animate-pulse rounded-[2rem] bg-sunken" />
+              <div className="h-28 animate-pulse rounded-3xl bg-sunken" />
+              <div className="h-48 animate-pulse rounded-3xl bg-sunken" />
             </div>
           ) : (
             <div key={section} className="page-enter">

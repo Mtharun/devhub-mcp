@@ -142,3 +142,68 @@ export function listTasks(db: DatabaseSync, filter: ListTasksFilter = {}): Task[
   const rows = db.prepare(sql).all(...values) as unknown as TaskRow[];
   return rows.map(toTask);
 }
+export interface UpdateTaskInput {
+  title?: string;
+  description?: string;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  dueDate?: string;
+}
+
+export function updateTask(db: DatabaseSync, id: number, changes: UpdateTaskInput): Task {
+  const setClauses: string[] = [];
+  const values: string[] = [];
+
+  if (changes.title !== undefined) {
+    setClauses.push("title = ?");
+    values.push(changes.title);
+  }
+  if (changes.description !== undefined) {
+    setClauses.push("description = ?");
+    values.push(changes.description);
+  }
+  if (changes.status !== undefined) {
+    setClauses.push("status = ?");
+    values.push(changes.status);
+  }
+  if (changes.priority !== undefined) {
+    setClauses.push("priority = ?");
+    values.push(changes.priority);
+  }
+  if (changes.dueDate !== undefined) {
+    setClauses.push("due_date = ?");
+    values.push(changes.dueDate);
+  }
+
+  if (setClauses.length === 0) {
+    throw new DevHubError("No changes provided. Specify at least one field to update.");
+  }
+
+  setClauses.push("updated_at = ?");
+  values.push(new Date().toISOString());
+
+  const updated = db
+    .prepare(`UPDATE tasks SET ${setClauses.join(", ")} WHERE id = ? RETURNING id`)
+    .get(...values, id) as unknown as { id: number } | undefined;
+
+  if (!updated) {
+    throw new DevHubError(`No task with id ${id} was found. Use list_tasks to see task ids.`);
+  }
+
+  return getTaskById(db, updated.id);
+}
+
+export function archiveTask(db: DatabaseSync, id: number): Task {
+  const existing = getTaskById(db, id);
+
+  if (existing.status === "archived") {
+    return existing;
+  }
+
+  db.prepare("UPDATE tasks SET status = 'archived', updated_at = ? WHERE id = ?").run(
+    new Date().toISOString(),
+    id
+  );
+
+  return getTaskById(db, id);
+}

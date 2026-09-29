@@ -1,34 +1,83 @@
+@import "@fontsource-variable/ibm-plex-sans";
+@import "@fontsource-variable/jetbrains-mono";
 @import "tailwindcss";
 
 /* Dark mode follows a "dark" class on <html>, set from the system setting or the toggle button */
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
-}
-
-html {
+/*
+  Layout: developer-workspace shell. Sidebar on the left (bottom bar on phones),
+  one working column on the right. Warm graphite neutrals, amber as the single accent.
+*/
+:root {
+  --canvas: #f3f1ec;   /* page ground: warm paper */
+  --panel: #fbfaf7;    /* raised surfaces */
+  --sunken: #ebe8e1;   /* sidebar, wells */
+  --line: #ddd8cd;     /* hairlines */
+  --ink: #1f1d19;      /* main text */
+  --dim: #6f6a60;      /* secondary text */
+  --accent: #b45309;   /* amber, the only brand colour */
+  --accent-soft: #f6e7cf;
+  --good: #15803d;
+  --warn: #b45309;
+  --bad: #c2410c;
+  --bad-soft: #fbe3d6;
   color-scheme: light;
 }
-html.dark {
+
+.dark {
+  --canvas: #111315;
+  --panel: #171a1d;
+  --sunken: #0c0e10;
+  --line: #262a2f;
+  --ink: #e8e4dc;
+  --dim: #8e9197;
+  --accent: #f0a73a;
+  --accent-soft: #2e2415;
+  --good: #5bd08a;
+  --warn: #f0a73a;
+  --bad: #f2876a;
+  --bad-soft: #33201a;
   color-scheme: dark;
 }
 
+@theme inline {
+  --font-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --color-canvas: var(--canvas);
+  --color-panel: var(--panel);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-dim: var(--dim);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  @apply bg-canvas font-sans text-ink antialiased;
+  font-size: 14px;
 }
 
-/* Soft glow behind the header */
-.hero-glow {
-  background:
-    radial-gradient(60rem 20rem at 10% -10%, rgb(99 102 241 / 0.18), transparent 60%),
-    radial-gradient(40rem 18rem at 90% -20%, rgb(6 182 212 / 0.14), transparent 60%);
+h1,
+h2,
+h3 {
+  text-wrap: balance;
 }
 
-/* Thin, quiet scrollbars for the horizontal boards */
-.board-scroll {
-  scrollbar-width: thin;
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

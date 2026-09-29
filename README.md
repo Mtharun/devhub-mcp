@@ -27,7 +27,7 @@ As a 2026 full stack developer fresher, I wanted to learn MCP by building someth
 - `find_todos`: scan a project folder for `TODO`, `FIXME`, `HACK`, `XXX` and `BUG` comments
 
 **Dashboard**
-- React + Vite + Tailwind dashboard: today's focus, task Kanban board, job pipeline, project progress rings
+- React + Vite + Tailwind dashboard in a developer-workspace style: sidebar, overview with "up next", issue-tracker task list, job-search stages, project progress bars
 - Light/dark theme, mobile friendly, refreshes itself every 30 seconds
 - Served by a read-only local JSON API (`npm run web`)
 
@@ -187,7 +187,7 @@ To work on the dashboard itself, run `npm run web` in one terminal and `npm run 
 - [x] TODO scanner for local project folders
 - [x] Job application tracker
 - [x] REST API and dashboard (read-only)
-- [x] React dashboard (Kanban board, job pipeline, progress rings)
+- [x] React dashboard (sidebar workspace, task list, job stages, project progress)
 - [ ] Learning progress and developer notes
 - [ ] Interview preparation prompts
 - [ ] Connect the official GitHub MCP server alongside DevHub

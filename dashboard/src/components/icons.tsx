@@ -95,3 +95,50 @@ export const IconSparkle = (p: IconProps) => (
     <path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" />
   </Base>
 );
+
+export const IconHome = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z" />
+  </Base>
+);
+
+// Task status icons, drawn like an issue tracker: empty ring, half-filled ring, filled check
+export const StatusTodo = (p: IconProps) => (
+  <Base {...p} strokeWidth={2}>
+    <circle cx="12" cy="12" r="8" strokeDasharray="3 2.4" />
+  </Base>
+);
+
+export const StatusProgress = (p: IconProps) => (
+  <Base {...p} strokeWidth={2}>
+    <circle cx="12" cy="12" r="8" />
+    <path d="M12 7a5 5 0 0 1 0 10z" fill="currentColor" stroke="none" />
+  </Base>
+);
+
+export const StatusDone = (p: IconProps) => (
+  <svg viewBox="0 0 24 24" width={18} height={18} aria-hidden="true" {...p}>
+    <circle cx="12" cy="12" r="9" fill="currentColor" />
+    <path d="M8 12.5l2.6 2.5L16 9.5" fill="none" stroke="var(--panel)" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+// Signal-strength style priority: 1, 2 or 3 bars filled
+export function PriorityBars({ level, ...p }: IconProps & { level: 1 | 2 | 3 }) {
+  return (
+    <svg viewBox="0 0 16 16" width={16} height={16} aria-hidden="true" {...p}>
+      {[0, 1, 2].map((i) => (
+        <rect
+          key={i}
+          x={2 + i * 4.5}
+          y={10 - i * 3.5}
+          width={3}
+          height={4 + i * 3.5}
+          rx={1}
+          fill="currentColor"
+          opacity={i < level ? 1 : 0.22}
+        />
+      ))}
+    </svg>
+  );
+}

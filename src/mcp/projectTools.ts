@@ -1,7 +1,12 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { DatabaseSync } from "node:sqlite";
 import { z } from "zod";
-import { createProject, listProjects, updateProject } from "../services/projectService.js";
+import {
+  archiveProject,
+  createProject,
+  listProjects,
+  updateProject,
+} from "../services/projectService.js";
 import { DevHubError } from "../errors.js";
 
 export function registerProjectTools(server: McpServer, db: DatabaseSync): void {
@@ -92,7 +97,7 @@ export function registerProjectTools(server: McpServer, db: DatabaseSync): void 
         "shares a project's GitHub link or folder path, or mentions a new technology they are using. " +
         "Only the fields you provide are changed. " +
         "Note: techStack replaces the whole list, so include existing technologies you want to keep. " +
-        "To archive a project, use archive_project instead.",
+        "To restore an archived project, set its status. To archive a project, use archive_project instead.",
       inputSchema: {
         name: z.string().trim().min(1).max(100).describe("Exact name of the existing project to update"),
         description: z.string().trim().max(500).optional().describe("New description"),
@@ -132,6 +137,46 @@ export function registerProjectTools(server: McpServer, db: DatabaseSync): void 
       }
     }
   );
+
+  // Tool 4: archive_project (write, reversible)
+  server.registerTool(
+    "archive_project",
+    {
+      title: "Archive Project",
+      description:
+        "Archive a project so it is hidden from the normal project list. Nothing is deleted. " +
+        "Use this when the user wants to archive, remove, delete, hide or clean up a project. " +
+        "DevHub never permanently deletes projects; an archived project can be restored with update_project.",
+      inputSchema: {
+        name: z.string().trim().min(1).max(100).describe("Exact name of the project to archive"),
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
+    },
+    async ({ name }) => {
+      try {
+        const project = archiveProject(db, name);
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Project "${project.name}" is archived. It is hidden from the normal list and can be restored with update_project.`,
+            },
+          ],
+        };
+      } catch (error) {
+        if (error instanceof DevHubError) {
+          return errorResult(error.message);
+        }
+        console.error("Unexpected error in archive_project:", error);
+        return errorResult("An unexpected error occurred while archiving the project.");
+      }
+    }
+  );
 }
 
 // Helper: build an MCP tool error result
@@ -141,4 +186,3 @@ function errorResult(message: string) {
     isError: true,
   };
 }
-

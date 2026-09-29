@@ -160,3 +160,24 @@ export function updateProject(db: DatabaseSync, name: string, changes: UpdatePro
 
   return toProject(row);
 }
+export function archiveProject(db: DatabaseSync, name: string): Project {
+  const existing = db
+    .prepare("SELECT * FROM projects WHERE name = ?")
+    .get(name) as unknown as ProjectRow | undefined;
+
+  if (!existing) {
+    throw new DevHubError(
+      `No project named "${name}" was found. Use list_projects to see the available projects.`
+    );
+  }
+
+  if (existing.status === "archived") {
+    return toProject(existing);
+  }
+
+  const row = db
+    .prepare("UPDATE projects SET status = 'archived', updated_at = ? WHERE name = ? RETURNING *")
+    .get(new Date().toISOString(), name) as unknown as ProjectRow;
+
+  return toProject(row);
+}
